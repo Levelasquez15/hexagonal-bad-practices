@@ -50,6 +50,9 @@ public class UserModel {
   public boolean passwordMatches(final String plainPassword) {
     return this.password.verifyPlain(plainPassword);
   }
+  public boolean isAllowedToLogin() {
+    return this.status == UserStatus.ACTIVE;
+  }
   // VIOLACIÓN Regla 9 (Hexagonal): método de conversión a entidad de infraestructura dentro del dominio.
   // El dominio NO debe saber nada sobre cómo se persisten sus datos.
   public UserEntity toEntity() {
