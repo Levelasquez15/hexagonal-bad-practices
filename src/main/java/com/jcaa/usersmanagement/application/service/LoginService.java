@@ -49,7 +49,7 @@ public final class LoginService implements LoginUseCase {
     }
 
     // Clean Code - Regla 14: acceso profundo a internals del value object.
-    if (!user.getPassword().verifyPlain(plainPassword)) {
+    if (!user.passwordMatches(plainPassword)) {
       throw InvalidCredentialsException.becauseCredentialsAreInvalid();
     }
 
@@ -60,10 +60,7 @@ public final class LoginService implements LoginUseCase {
     // Esta expresión equivale a "user.getStatus() != ACTIVE" pero está escrita de forma
     // redundante e innecesariamente larga — el lector debe analizar cada rama para
     // deducir la intención central. Debería ser: if (!user.isAllowedToLogin()).
-    if (user.getStatus() != UserStatus.ACTIVE
-        || user.getStatus() == UserStatus.BLOCKED
-        || user.getStatus() == UserStatus.INACTIVE
-        || user.getStatus() == UserStatus.PENDING) {
+    if (!user.isAllowedToLogin()) {
       throw InvalidCredentialsException.becauseUserIsNotActive();
     }
 
