@@ -28,10 +28,8 @@ public class EmailDestinationModel {
   }
 
   private static String validateNotBlank(final String value, final String errorMessage) {
-    // Clean Code - Regla 4 (validar nulos sin == null)
     Objects.requireNonNull(value, errorMessage);
 
-    // Clean Code - Regla 10 (textos encapsulados en constantes)
     if (value.trim().isEmpty()) {
       throw new IllegalArgumentException(errorMessage);
     }
