@@ -47,9 +47,19 @@ public class UserModel {
   public UserModel deactivate() {
     return new UserModel(id, name, email, password, role, UserStatus.INACTIVE);
   }
+
   public boolean passwordMatches(final String plainPassword) {
     return this.password.verifyPlain(plainPassword);
   }
+
+  public boolean isAllowedToLogin() {
+    return this.status == UserStatus.ACTIVE;
+  }
+
+  public boolean isAdmin() {
+    return this.role == UserRole.ADMIN;
+  }
+
   // VIOLACIÓN Regla 9 (Hexagonal): método de conversión a entidad de infraestructura dentro del dominio.
   // El dominio NO debe saber nada sobre cómo se persisten sus datos.
   public UserEntity toEntity() {
