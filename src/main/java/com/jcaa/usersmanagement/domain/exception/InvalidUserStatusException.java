@@ -12,3 +12,4 @@ public final class InvalidUserStatusException extends DomainException {
     return new InvalidUserStatusException(String.format(MSG_INVALID_STATUS, status));
   }
 }
+
