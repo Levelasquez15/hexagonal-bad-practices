@@ -53,26 +53,21 @@ public class UserValidationUtils {
     return password != null && password.length() >= MIN_PASSWORD_LENGTH;
   }
 
-  // Clean Code - Regla 20 (objeto antes que primitivo cuando el concepto lo merezca):
-  // Este método recibe userId, email y status como String y int desnudos en lugar de
-  // usar los tipos de dominio UserId, UserEmail y UserStatus.
-  // El código pierde toda la protección de invariantes que ofrecen los value objects:
-  // un id vacío, un email malformado o un status inválido pasarían desapercibidos.
-  // La regla dice: encapsula conceptos como UserId, Email, Status con sus propios tipos.
-  // Clean Code - Regla 5 (pocos parámetros): además recibe maxInactivityDays como
-  // primitivo int suelto, que podría encapsularse en un objeto de política de acceso.
-  public static boolean canPerformAction(
-      final String userId,
-      final String email,
-      final String status,
-      final int maxInactivityDays) {
-    // Clean Code - Regla 17: condición larga y difícil de leer que debería extraerse.
-    if (userId == null || userId.isBlank() || email == null || !email.contains("@")) {
+  // Clean Code - Reglas 5, 17, 18, 20 combinadas: 
+  // Encapsular en objeto, método claro, extraer condiciones grandes, evitar literales.
+  public static boolean canPerformAction(final UserModel user, final int maxInactivityDays) {
+    if (isInvalidIdentity(user)) {
       return false;
     }
-    // Clean Code - Regla 18: "ACTIVE" y "PENDING" son literales mágicos —
-    // deberían ser UserStatus.ACTIVE.name() o constantes con nombre descriptivo.
-    return ("ACTIVE".equals(status) || "PENDING".equals(status)) && maxInactivityDays >= 0;
+    return hasAllowedStatus(user.getStatus()) && maxInactivityDays >= 0;
+  }
+
+  private static boolean isInvalidIdentity(final UserModel user) {
+    return user == null || user.getId() == null || user.getEmail() == null;
+  }
+
+  private static boolean hasAllowedStatus(final UserStatus status) {
+    return UserStatus.ACTIVE.equals(status) || UserStatus.PENDING.equals(status);
   }
 }
 
