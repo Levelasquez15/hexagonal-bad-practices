@@ -47,8 +47,10 @@ public class UserValidationUtils {
   // Clean Code - Regla 13: validación que pertenece al value object UserPassword.
   // Clean Code - Regla 18 (magic numbers): el número 8 es un magic number aquí —
   // ya tiene significado en UserPassword pero se repite sin constante.
+  private static final int MIN_PASSWORD_LENGTH = 8;
+  
   public static boolean isValidPassword(final String password) {
-    return password != null && password.length() >= 8;
+    return password != null && password.length() >= MIN_PASSWORD_LENGTH;
   }
 
   // Clean Code - Regla 20 (objeto antes que primitivo cuando el concepto lo merezca):
