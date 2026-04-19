@@ -26,12 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-/**
- * Tests para DeleteUserService.
- *
- * <p>Cubre: flujo feliz (delete invocado), usuario no encontrado y validación del command.
- */
-@DisplayName("DeleteUserService")
+@DisplayName("Delete User Service Tests")
 @ExtendWith(MockitoExtension.class)
 class DeleteUserServiceTest {
 
@@ -48,10 +43,8 @@ class DeleteUserServiceTest {
     }
   }
 
-  // ── flujo feliz
-
   @Test
-  @DisplayName("execute() invoca deleteUserPort cuando el usuario existe")
+  @DisplayName("Should invoke deleteUserPort when user exists")
   void shouldDeleteWhenUserExists() {
     // Arrange
     final DeleteUserCommand command = new DeleteUserCommand("u-001");
@@ -74,10 +67,8 @@ class DeleteUserServiceTest {
     verify(deleteUserPort).delete(new UserId("u-001"));
   }
 
-  // ── usuario no encontrado
-
   @Test
-  @DisplayName("execute() lanza UserNotFoundException cuando el id no existe")
+  @DisplayName("Should throw UserNotFoundException when user id does not exist")
   void shouldThrowWhenUserNotFound() {
     // Arrange
     final DeleteUserCommand command = new DeleteUserCommand("no-existe");
@@ -89,10 +80,8 @@ class DeleteUserServiceTest {
     verify(deleteUserPort, never()).delete(any());
   }
 
-  // ── validación del command
-
   @Test
-  @DisplayName("execute() lanza ConstraintViolationException cuando el id está en blanco")
+  @DisplayName("Should throw ConstraintViolationException when command data is invalid (e.g. blank id)")
   void shouldThrowWhenCommandIsInvalid() {
     // Arrange
     final DeleteUserCommand command = new DeleteUserCommand("  ");
