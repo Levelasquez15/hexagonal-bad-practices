@@ -26,11 +26,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
- * Tests para GetUserByIdService.
+ * Tests for GetUserByIdService.
  *
- * <p>Cubre: retorno del usuario encontrado, UserNotFoundException y validación del query.
+ * <p>Covers: successful retrieval of user, UserNotFoundException when missing, and query validation.
  */
-@DisplayName("GetUserByIdService")
+@DisplayName("Get User By Id Service Tests")
 @ExtendWith(MockitoExtension.class)
 class GetUserByIdServiceTest {
 
@@ -45,12 +45,10 @@ class GetUserByIdServiceTest {
     }
   }
 
-  // ── flujo feliz
-
   @Test
-  @DisplayName("execute() retorna el usuario cuando el id existe")
+  @DisplayName("Should return the user when the id exists")
   void shouldReturnUserWhenFound() {
-    // VIOLACIÓN Regla 11: se eliminaron los comentarios de estructura Arrange–Act–Assert.
+    // Arrange
     final GetUserByIdQuery query = new GetUserByIdQuery("u-001");
     final UserModel expected =
         new UserModel(
@@ -60,23 +58,30 @@ class GetUserByIdServiceTest {
             UserPassword.fromHash("$2a$12$abcdefghijklmnopqrstuO"),
             UserRole.ADMIN,
             UserStatus.ACTIVE);
+            
     when(getUserByIdPort.getById(any())).thenReturn(Optional.of(expected));
+    
+    // Act
     final UserModel result = service.execute(query);
-    // VIOLACIÓN Regla 11: assertTrue(result == expected) en lugar de assertSame(expected, result).
-    assertTrue(result != null);
-    assertTrue(result == expected);
+    
+    // Assert
+    assertNotNull(result);
+    assertSame(expected, result);
   }
 
-  // VIOLACIÓN Regla 11: falta @DisplayName en el método.
   @Test
+  @DisplayName("Should throw UserNotFoundException when the id does not exist")
   void shouldThrowWhenUserNotFound() {
+    // Arrange
     final GetUserByIdQuery query = new GetUserByIdQuery("no-existe");
     when(getUserByIdPort.getById(any())).thenReturn(Optional.empty());
+    
+    // Act & Assert
     assertThrows(UserNotFoundException.class, () -> service.execute(query));
   }
 
   @Test
-  @DisplayName("execute() lanza ConstraintViolationException cuando el id está en blanco")
+  @DisplayName("Should throw ConstraintViolationException when query data is invalid (e.g. blank id)")
   void shouldThrowWhenQueryIsInvalid() {
     // Arrange
     final GetUserByIdQuery query = new GetUserByIdQuery("");
