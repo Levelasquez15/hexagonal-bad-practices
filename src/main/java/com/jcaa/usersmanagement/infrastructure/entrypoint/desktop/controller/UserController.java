@@ -12,6 +12,7 @@ import com.jcaa.usersmanagement.application.service.dto.command.LoginCommand;
 import com.jcaa.usersmanagement.application.service.dto.command.UpdateUserCommand;
 import com.jcaa.usersmanagement.application.service.dto.query.GetUserByIdQuery;
 import com.jcaa.usersmanagement.domain.model.UserModel;
+import com.jcaa.usersmanagement.domain.valueobject.UserId;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.CreateUserRequest;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.LoginRequest;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.UpdateUserRequest;
@@ -36,12 +37,7 @@ public final class UserController {
     return UserDesktopMapper.toResponseList(users);
   }
 
-  public UserResponse findUserById(final String id) {
-    // Clean Code - Regla 20 (objeto antes que primitivo cuando el concepto lo merezca):
-    // El parámetro "id" es un String desnudo. El dominio tiene un tipo propio UserId
-    // que encapsula la validación (no vacío, no nulo, trimming).
-    // Al recibir String aquí, cualquier String pasa sin validación hasta llegar al value object.
-    // Recibir UserId directamente haría el contrato más expresivo y seguro.
+  public UserResponse findUserById(final UserId id) {
     final var query = UserDesktopMapper.toGetByIdQuery(id);
     final var user = getUserByIdUseCase.execute(query);
     return UserDesktopMapper.toResponse(user);
@@ -59,7 +55,7 @@ public final class UserController {
     return UserDesktopMapper.toResponse(user);
   }
 
-  public void deleteUser(final String id) {
+  public void deleteUser(final UserId id) {
     final var command = UserDesktopMapper.toDeleteCommand(id);
     deleteUserUseCase.execute(command);
   }
