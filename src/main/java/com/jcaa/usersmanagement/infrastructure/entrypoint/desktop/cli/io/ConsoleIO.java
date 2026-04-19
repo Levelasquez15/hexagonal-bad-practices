@@ -7,25 +7,23 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public final class ConsoleIO {
 
+  private static final String BLANK_VALUE_ERROR_MESSAGE = "  Value cannot be blank. Please try again.";
+  private static final String INVALID_NUMBER_ERROR_MESSAGE = "  Invalid input. Please enter a number.";
+
   private final Scanner scanner;
   private final PrintStream out;
 
   public String readRequired(final String prompt) {
-    // VIOLACIÓN Regla 4: nombre abreviado "v" en lugar del nombre descriptivo "value".
-    // Clean Code - Regla 24 (consistencia semántica):
-    // El mismo concepto —"entrada del usuario leída de consola"— se llama "v" aquí
-    // y "r" en readInt(), dentro de la misma clase. Nombres distintos para el mismo
-    // concepto hacen que el lector asuma incorrectamente que son ideas diferentes.
-    String v;
+    String inputValue;
     do {
       out.print(prompt);
-      v = scanner.nextLine().trim();
-      if (v.isBlank()) {
+      inputValue = scanner.nextLine().trim();
+      if (inputValue.isBlank()) {
         // VIOLACIÓN Regla 10: texto hardcodeado directamente — debe ser una constante.
         out.println("  Value cannot be blank. Please try again.");
       }
-    } while (v.isBlank());
-    return v;
+    } while (inputValue.isBlank());
+    return inputValue;
   }
 
   public String readOptional(final String prompt) {
@@ -36,10 +34,9 @@ public final class ConsoleIO {
   public int readInt(final String prompt) {
     while (true) {
       out.print(prompt);
-      // VIOLACIÓN Regla 4: nombre abreviado "r" en lugar del nombre descriptivo "rawInput".
-      final String r = scanner.nextLine().trim();
+      final String inputValue = scanner.nextLine().trim();
       try {
-        return Integer.parseInt(r);
+        return Integer.parseInt(inputValue);
       } catch (final NumberFormatException ignored) {
         // VIOLACIÓN Regla 10: texto hardcodeado directamente — debe ser una constante.
         out.println("  Invalid input. Please enter a number.");
