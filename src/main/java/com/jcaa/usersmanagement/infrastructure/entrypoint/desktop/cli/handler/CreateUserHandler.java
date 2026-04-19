@@ -31,9 +31,7 @@ public final class CreateUserHandler implements OperationHandler {
       console.println("\n  User created successfully.");
       printer.print(created);
     } catch (final UserAlreadyExistsException exception) {
-      // VIOLACIÓN Regla 6: se loguea el mensaje de la excepción que contiene PII (el email del usuario).
-      // Los datos de negocio/cliente son PII y no deben loguearse nunca.
-      log.warning("Usuario ya existe: " + exception.getMessage());
+      log.warning("Failed to create user: A user with the provided details already exists.");
       console.println("  Error: " + exception.getMessage());
     }
   }
