@@ -19,8 +19,7 @@ public final class ConsoleIO {
       out.print(prompt);
       inputValue = scanner.nextLine().trim();
       if (inputValue.isBlank()) {
-        // VIOLACIÓN Regla 10: texto hardcodeado directamente — debe ser una constante.
-        out.println("  Value cannot be blank. Please try again.");
+        out.println(BLANK_VALUE_ERROR_MESSAGE);
       }
     } while (inputValue.isBlank());
     return inputValue;
@@ -38,8 +37,7 @@ public final class ConsoleIO {
       try {
         return Integer.parseInt(inputValue);
       } catch (final NumberFormatException ignored) {
-        // VIOLACIÓN Regla 10: texto hardcodeado directamente — debe ser una constante.
-        out.println("  Invalid input. Please enter a number.");
+        out.println(INVALID_NUMBER_ERROR_MESSAGE);
       }
     }
   }
