@@ -158,3 +158,4 @@ class UpdateUserServiceTest {
     verifyNoInteractions(updateUserPort, getUserByIdPort, getUserByEmailPort);
   }
 }
+

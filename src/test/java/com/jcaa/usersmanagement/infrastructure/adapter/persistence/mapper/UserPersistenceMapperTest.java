@@ -42,13 +42,11 @@ class UserPersistenceMapperTest {
 
   @Mock private ResultSet resultSet;
 
-  private UserPersistenceMapper mapper;
   private UserModel userModel;
   private UserEntity userEntity;
 
   @BeforeEach
   void setUp() {
-    mapper = new UserPersistenceMapper();
     userModel =
         new UserModel(
             new UserId(ID),
@@ -69,7 +67,7 @@ class UserPersistenceMapperTest {
     // Arrange (Setup ya provee userModel)
 
     // Act
-    final UserPersistenceDto result = mapper.fromModelToDto(userModel);
+    final UserPersistenceDto result = UserPersistenceMapper.fromModelToDto(userModel);
 
     // Assert
     assertAll(
@@ -92,7 +90,7 @@ class UserPersistenceMapperTest {
     // Arrange (Setup ya provee userEntity)
 
     // Act
-    final UserModel result = mapper.fromEntityToModel(userEntity);
+    final UserModel result = UserPersistenceMapper.fromEntityToModel(userEntity);
 
     // Assert
     assertAll(
@@ -120,7 +118,7 @@ class UserPersistenceMapperTest {
     when(resultSet.getString("updated_at")).thenReturn(UPDATED_AT);
 
     // Act
-    final UserEntity result = mapper.fromResultSetToEntity(resultSet);
+    final UserEntity result = UserPersistenceMapper.fromResultSetToEntity(resultSet);
 
     // Assert
     assertAll(
@@ -146,7 +144,7 @@ class UserPersistenceMapperTest {
     // Act & Assert
     assertThrows(
         SQLException.class,
-        () -> mapper.fromResultSetToEntity(resultSet),
+        () -> UserPersistenceMapper.fromResultSetToEntity(resultSet),
         "must propagate SQLException when ResultSet throws on getString");
   }
 
@@ -159,7 +157,7 @@ class UserPersistenceMapperTest {
     when(resultSet.next()).thenReturn(false);
 
     // Act
-    final List<UserModel> result = mapper.fromResultSetToModelList(resultSet);
+    final List<UserModel> result = UserPersistenceMapper.fromResultSetToModelList(resultSet);
 
     // Assert
     assertTrue(result.isEmpty(), "must return an empty list when ResultSet has no rows");
@@ -182,7 +180,7 @@ class UserPersistenceMapperTest {
     when(resultSet.getString("updated_at")).thenReturn(UPDATED_AT, UPDATED_AT);
 
     // Act
-    final List<UserModel> result = mapper.fromResultSetToModelList(resultSet);
+    final List<UserModel> result = UserPersistenceMapper.fromResultSetToModelList(resultSet);
 
     // Assert
     assertEquals(2, result.size(), "must return one model per row in the ResultSet");
@@ -200,7 +198,7 @@ class UserPersistenceMapperTest {
     // Act & Assert
     assertThrows(
         SQLException.class,
-        () -> mapper.fromResultSetToModelList(resultSet),
+        () -> UserPersistenceMapper.fromResultSetToModelList(resultSet),
         "must propagate SQLException when a row fails to be read");
   }
 }

@@ -6,13 +6,6 @@ import com.jcaa.usersmanagement.application.port.in.GetAllUsersUseCase;
 import com.jcaa.usersmanagement.application.port.in.GetUserByIdUseCase;
 import com.jcaa.usersmanagement.application.port.in.LoginUseCase;
 import com.jcaa.usersmanagement.application.port.in.UpdateUserUseCase;
-import com.jcaa.usersmanagement.application.service.dto.command.CreateUserCommand;
-import com.jcaa.usersmanagement.application.service.dto.command.DeleteUserCommand;
-import com.jcaa.usersmanagement.application.service.dto.command.LoginCommand;
-import com.jcaa.usersmanagement.application.service.dto.command.UpdateUserCommand;
-import com.jcaa.usersmanagement.application.service.dto.query.GetUserByIdQuery;
-import com.jcaa.usersmanagement.domain.model.UserModel;
-import com.jcaa.usersmanagement.domain.valueobject.UserId;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.CreateUserRequest;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.LoginRequest;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.UpdateUserRequest;
@@ -37,7 +30,7 @@ public final class UserController {
     return UserDesktopMapper.toResponseList(users);
   }
 
-  public UserResponse findUserById(final UserId id) {
+  public UserResponse findUserById(final String id) {
     final var query = UserDesktopMapper.toGetByIdQuery(id);
     final var user = getUserByIdUseCase.execute(query);
     return UserDesktopMapper.toResponse(user);
@@ -55,7 +48,7 @@ public final class UserController {
     return UserDesktopMapper.toResponse(user);
   }
 
-  public void deleteUser(final UserId id) {
+  public void deleteUser(final String id) {
     final var command = UserDesktopMapper.toDeleteCommand(id);
     deleteUserUseCase.execute(command);
   }
