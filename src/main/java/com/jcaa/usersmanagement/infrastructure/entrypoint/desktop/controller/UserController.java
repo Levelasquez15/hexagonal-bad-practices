@@ -32,9 +32,8 @@ public final class UserController {
   private final LoginUseCase loginUseCase;
 
   public List<UserResponse> listAllUsers() {
-    // VIOLACIÓN Regla 4: uso de abreviatura "usrs" — los nombres deben ser claros y sin abreviaturas.
-    final var usrs = getAllUsersUseCase.execute();
-    return UserDesktopMapper.toResponseList(usrs);
+    final var users = getAllUsersUseCase.execute();
+    return UserDesktopMapper.toResponseList(users);
   }
 
   public UserResponse findUserById(final String id) {
@@ -49,10 +48,7 @@ public final class UserController {
   }
 
   public UserResponse createUser(final CreateUserRequest request) {
-    // VIOLACIÓN Regla 9 (Hexagonal): el entrypoint construye directamente el command del dominio
-    // sin pasar por el mapper — la capa entrypoint no debe conocer los tipos internos de la aplicación.
-    final var command = new CreateUserCommand(
-        request.id(), request.name(), request.email(), request.password(), request.role());
+    final var command = UserDesktopMapper.toCreateCommand(request);
     final var user = createUserUseCase.execute(command);
     return UserDesktopMapper.toResponse(user);
   }
