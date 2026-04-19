@@ -25,7 +25,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("LoginService")
+/**
+ * Tests for LoginService.
+ *
+ * <p>Covers: successful login for active users, handling of unregistered emails, 
+ * invalid passwords, inactive users, and command validation.
+ */
+@DisplayName("Login Service Tests")
 @ExtendWith(MockitoExtension.class)
 class LoginServiceTest {
 
@@ -44,10 +50,9 @@ class LoginServiceTest {
   }
 
   @Test
-  @DisplayName("execute() retorna el usuario cuando las credenciales son correctas y está activo")
+  @DisplayName("Should return the user when credentials are valid and user is active")
   void shouldReturnUserWhenCredentialsAreValidAndUserIsActive() {
-    // VIOLACIÓN Regla 11: se eliminaron los comentarios de estructura Arrange–Act–Assert.
-    // La regla exige que cada bloque esté documentado con // Arrange, // Act, // Assert.
+    // Arrange
     final LoginCommand command = new LoginCommand(EMAIL, PASSWORD);
     final UserModel activeUser =
         new UserModel(
@@ -57,32 +62,33 @@ class LoginServiceTest {
             UserPassword.fromPlainText(PASSWORD),
             UserRole.ADMIN,
             UserStatus.ACTIVE);
+            
     when(getUserByEmailPort.getByEmail(any())).thenReturn(Optional.of(activeUser));
+    
+    // Act
     final UserModel result = service.execute(command);
-    // VIOLACIÓN Regla 11: se usa assertTrue(result != null) en lugar de assertNotNull(result).
-    // La regla indica usar las aserciones correctas — assertNotNull es más expresivo.
-    assertTrue(result != null);
-    // VIOLACIÓN Regla 11: se usa assertTrue(result == activeUser) en lugar de assertSame(...).
-    assertTrue(result == activeUser);
+    
+    // Assert
+    assertNotNull(result);
+    assertSame(activeUser, result);
   }
 
-  // ── email no registrado
-
-  // VIOLACIÓN Regla 11: falta @DisplayName — los tests deben documentar su comportamiento.
   @Test
+  @DisplayName("Should throw InvalidCredentialsException when email is not found")
   void shouldThrowWhenEmailNotFound() {
+    // Arrange
     final LoginCommand command = new LoginCommand(EMAIL, PASSWORD);
-
     when(getUserByEmailPort.getByEmail(any())).thenReturn(Optional.empty());
 
+    // Act & Assert
     assertThrows(InvalidCredentialsException.class, () -> service.execute(command));
   }
 
-  // VIOLACIÓN Regla 11: falta @DisplayName en el método.
   @Test
+  @DisplayName("Should throw InvalidCredentialsException when password is wrong")
   void shouldThrowWhenPasswordIsWrong() {
+    // Arrange
     final LoginCommand command = new LoginCommand(EMAIL, "WrongPass99");
-
     final UserModel user =
         new UserModel(
             new UserId("u-001"),
@@ -94,15 +100,15 @@ class LoginServiceTest {
 
     when(getUserByEmailPort.getByEmail(any())).thenReturn(Optional.of(user));
 
+    // Act & Assert
     assertThrows(InvalidCredentialsException.class, () -> service.execute(command));
   }
 
   @Test
-  @DisplayName("execute() lanza InvalidCredentialsException cuando el usuario no está ACTIVE")
+  @DisplayName("Should throw InvalidCredentialsException when the user is not ACTIVE")
   void shouldThrowWhenUserIsNotActive() {
     // Arrange
     final LoginCommand command = new LoginCommand(EMAIL, PASSWORD);
-
     final UserModel pendingUser =
         new UserModel(
             new UserId("u-001"),
@@ -119,7 +125,7 @@ class LoginServiceTest {
   }
 
   @Test
-  @DisplayName("execute() lanza ConstraintViolationException cuando el command tiene campos inválidos")
+  @DisplayName("Should throw ConstraintViolationException when the command data is invalid")
   void shouldThrowWhenCommandIsInvalid() {
     // Arrange
     final LoginCommand command = new LoginCommand("no-es-email", "short");
