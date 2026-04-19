@@ -83,8 +83,8 @@ public final class UserManagementCli {
     console.println("    Main Menu");
     console.println(MENU_BORDER);
     // VIOLACIÓN Regla 4: nombre abreviado "opt" en lugar del nombre descriptivo "option".
-    for (final MenuOption opt : MenuOption.values()) {
-      console.printf("    [%d] %s%n", opt.getNumber(), opt.getDescription());
+    for (final MenuOption option : MenuOption.values()) {
+      console.printf("    [%d] %s%n", option.getNumber(), option.getDescription());
     }
     console.println(MENU_BORDER);
   }
