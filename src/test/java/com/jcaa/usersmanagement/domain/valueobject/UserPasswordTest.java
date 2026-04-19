@@ -9,17 +9,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-// VIOLACIÓN Regla 11: se eliminó @DisplayName de la clase.
+@DisplayName("Tests para el Value Object UserPassword")
 class UserPasswordTest {
 
-  // VIOLACIÓN Regla 11: falta @DisplayName en el test parametrizado.
   @ParameterizedTest
+  @DisplayName("Debe normalizar y hashear el password")
   @ValueSource(strings = {"password123", "   password123   "})
   void shouldNormalizeAndHashPassword(final String input) {
-    // VIOLACIÓN Regla 11: se eliminaron los comentarios Arrange–Act–Assert.
+    // Act
     final UserPassword result = UserPassword.fromPlainText(input);
-    // VIOLACIÓN Regla 11: assertTrue(result.value() != null) en lugar de assertNotNull.
-    assertTrue(result.value() != null);
+    
+    // Assert
+    assertNotNull(result.value());
     assertNotEquals(input.trim(), result.value());
   }
 
@@ -51,8 +52,10 @@ class UserPasswordTest {
   void shouldVerifyPlainPassword() {
     // Arrange
     final String plainPassword = "mySecurePassword";
+    
     // Act
     final UserPassword userPassword = UserPassword.fromPlainText(plainPassword);
+    
     // Assert
     assertTrue(userPassword.verifyPlain(plainPassword));
   }
@@ -64,8 +67,11 @@ class UserPasswordTest {
     final String rawPassword = "Abcde1234567";
     final UserPassword originalUserPassword = UserPassword.fromPlainText(rawPassword);
     final String generatedHash = originalUserPassword.value();
+    
     // Act
     final UserPassword fromHashUserPassword = UserPassword.fromHash(generatedHash);
+    
+    // Assert
     assertEquals(
         originalUserPassword,
         fromHashUserPassword,
@@ -81,6 +87,7 @@ class UserPasswordTest {
     // Arrange & Act
     final UserPassword password = UserPassword.fromPlainText("MiPassword123");
     final Object nonUserPassword = mock(Object.class);
+    
     // Assert
     assertNotEquals(password, nonUserPassword);
   }
@@ -91,6 +98,7 @@ class UserPasswordTest {
     // Arrange & Act
     final UserPassword a = UserPassword.fromPlainText("MiPassword123");
     final UserPassword b = UserPassword.fromPlainText("OtroPassword456");
+    
     // Assert
     assertNotEquals(a, b);
   }
@@ -98,11 +106,13 @@ class UserPasswordTest {
   @Test
   @DisplayName("hashCode: consistente para la misma instancia")
   void shouldReturnConsistentHashCode() {
-    // Arrange & Act
+    // Arrange
     UserPassword password = UserPassword.fromPlainText("MiPassword123");
-    //  Act
+    
+    // Act
     final int firstHashCode = password.hashCode();
     final int secondHashCode = password.hashCode();
+    
     // Assert
     assertEquals(firstHashCode, secondHashCode);
   }
@@ -113,6 +123,7 @@ class UserPasswordTest {
     // Arrange & Act
     final UserPassword a = UserPassword.fromPlainText("MiPassword123");
     final UserPassword b = UserPassword.fromHash(a.value()); // mismo hash => equals true
+    
     // Assert
     assertEquals(a, b);
     assertEquals(a.hashCode(), b.hashCode());
